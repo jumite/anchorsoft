@@ -126,7 +126,7 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEBUG = False
-ALLOWED_HOSTS = ['13.51.45.24']
+ALLOWED_HOSTS = ['16.16.74.133']
 
 
 # Default primary key field type

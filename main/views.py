@@ -9,12 +9,13 @@ from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate,update_session_auth_hash
 from django.db.models import Q
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import *
 
 
-
 # Create your views here.
+
 def homepage(request):
     # info = AppInfo.objects.get(pk=1)
     fdog = Category.objects.all()
@@ -132,7 +133,7 @@ def search(request):
                 
         }
         return render(request, 'search.html', context)
-    
+@login_required(login_url='signin')   
 def profile(request):
     userprof = Customer.objects.get(user__username = request.user.username)
         
@@ -141,6 +142,7 @@ def profile(request):
     }
     return render(request, 'profile.html', context)
 
+@login_required(login_url='signin')
 def profile_update(request):
     userprof = Customer.objects.get(user__username = request.user.username)
     form = ProfileUpdateForm(instance=request.user.customer)
@@ -161,7 +163,7 @@ def profile_update(request):
         
     }  
     return render(request, 'profile_update.html', context)   
-
+@login_required(login_url='signin')
 def password_update(request):
     userprof =Customer.objects.get(user__username =request.user.username)
     passupdate = PasswordChangeForm(request.user)
@@ -183,6 +185,7 @@ def password_update(request):
     }
     return render(request, 'password_update.html', context)
 
+@login_required(login_url='signin')
 def add_to_cart(request):
     if request.method == 'POST':
         quantity = int(request.POST['quantity'])
@@ -219,8 +222,7 @@ def add_to_cart(request):
             newitem.save()
             messages.success(request, 'one item added to cart')
             return redirect('products')
-        
-        
+              
 def cart(request):
     cart = Cart.objects.filter(user__username = request.user.username, paid=False)
     for item in cart:
@@ -300,7 +302,7 @@ def payment(request):
         profile = Customer.objects.get(user__username = request.user.username) 
         api_key = 'sk_test_563cbf6fc918a7bc4ecfab5644d56690a982dcdd' #sercret key from paystack
         curl = 'https://api.paystack.co/transaction/initialize' #paystack call url
-        cburl = 'http://13.51.45.24/callback' #payment confirmation page
+        cburl = 'https16.16.74.133/callback' #payment confirmation page
         ref = str(uuid.uuid4()) #reference id required by paystack as and additional reference number
         order_no = profile.id
         total = float(request.POST['total']) * 100 #total amount to be charged from customer card
